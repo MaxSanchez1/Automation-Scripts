@@ -221,25 +221,6 @@ function autoFillIntakeFromForm(e) {
     referralSource = whoIsReferralIfNot;
   }
 
-  // Create a new folder in this folder every time a form is submitted because there are going
-  // to be several filled out forms per google form submission eventually and we want them to
-  // be organized
-  var overallPopulatedFolder = DriveApp.getFolderById("1flKx8jJAz4CwG_nnP3W5hgMsuW1RyiUn");
-
-  // in the overall populated folder we want to make a case folder
-  var caseFolder = overallPopulatedFolder.createFolder(matterName + ", " + timestamp);
-
-  // find the template file for the intake form that will be filled
-  // this may have to change when this is ported over the work on different drive files
-  var intakeTemplateFile = DriveApp.getFileById("1n4yOtjfEwDxmLkr22KXJOM60-XvATFbya77aR0tZGqk");
-
-  // copy the template so we can modify that copy and put it in the case folder we just made
-  var copyOfIntake = intakeTemplateFile.makeCopy("intake for: " + matterName, caseFolder);
-
-  // open up the document so that we can edit it
-  var docOfIntakeCopy = DocumentApp.openById(copyOfIntake.getId());
-  var bodyOfIntake = docOfIntakeCopy.getBody();
-
   // creating newMatterName from data we already have so we don't have to do it every time
   // Formula: Last of c1, First of c1 & First of c2, Last of c2; property address;
   //          referral source; title company (if purchase); contract closing date
@@ -287,6 +268,25 @@ function autoFillIntakeFromForm(e) {
       var newMatterName = clientOneLast.concat(" ", clientOneFirst, " & ", clientTwoFirst, " ", clientTwoLast, "; ", propertyAddress, "; ", referralSource, "; ", closingDate);
     }
   }
+
+  // Create a new folder in this folder every time a form is submitted because there are going
+  // to be several filled out forms per google form submission eventually and we want them to
+  // be organized
+  var overallPopulatedFolder = DriveApp.getFolderById("1flKx8jJAz4CwG_nnP3W5hgMsuW1RyiUn");
+
+  // in the overall populated folder we want to make a case folder
+  var caseFolder = overallPopulatedFolder.createFolder(newMatterName + ", " + timestamp);
+
+  // find the template file for the intake form that will be filled
+  // this may have to change when this is ported over the work on different drive files
+  var intakeTemplateFile = DriveApp.getFileById("1n4yOtjfEwDxmLkr22KXJOM60-XvATFbya77aR0tZGqk");
+
+  // copy the template so we can modify that copy and put it in the case folder we just made
+  var copyOfIntake = intakeTemplateFile.makeCopy("intake for: " + newMatterName, caseFolder);
+
+  // open up the document so that we can edit it
+  var docOfIntakeCopy = DocumentApp.openById(copyOfIntake.getId());
+  var bodyOfIntake = docOfIntakeCopy.getBody();
 
 
   // fill in the variables with the form values of that name
@@ -512,7 +512,7 @@ function autoFillIntakeFromForm(e) {
     var attorneyReviewTemplate = DriveApp.getFileById("1WRHeE6M-QXl-KFPiVMz03PFaldWxO7_BceYo2zjPBTs");
 
     // copy the template so it can be edited and put it in the same caseFolder as the intake form
-    var copyOfAR = attorneyReviewTemplate.makeCopy("AR Letter for: " + matterName, caseFolder);
+    var copyOfAR = attorneyReviewTemplate.makeCopy("AR Letter for: " + newMatterName, caseFolder);
 
     // open up the document so that we can edit it
     var docOfARCopy = DocumentApp.openById(copyOfAR.getId());
@@ -527,7 +527,6 @@ function autoFillIntakeFromForm(e) {
 
     docOfARCopy.saveAndClose();
   }
-
 
   // grab contact sheet and update it based on responses to the form
   // update it based on a response in the main form
