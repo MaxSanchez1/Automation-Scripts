@@ -203,6 +203,8 @@ function autoFillIntakeFromForm(e) {
   var SImaterialDefectsNotes = e.values[197];
   var SImiscNotes = e.values[198];
   var SIsellerOwnsAdjoiningNotes = e.values[199];
+  var BQmansionTaxApplies = e.values[200];
+  var BQmansionTaxAppliesNotes = e.values[201];
 
   // setting the referral as either values 57 or values 58
   if (isReferralOurRealtor == "Yes") {
@@ -477,7 +479,8 @@ function autoFillIntakeFromForm(e) {
   bodyOfIntake.replaceText("{{SImaterialDefects}}", SImaterialDefects);
   bodyOfIntake.replaceText("{{SImaterialDefectsNotes}}", SImaterialDefectsNotes);
   bodyOfIntake.replaceText("{{SImiscNotes}}", SImiscNotes);
-  // bodyOfIntake.replaceText("{{SIsellerOwnsAdjoining}}", SIsellerOwnsAdjoining);
+  bodyOfIntake.replaceText("{{BQmansionTaxApplies}}", BQmansionTaxApplies);
+  bodyOfIntake.replaceText("{{BQmansionTaxAppliesNotes}}", BQmansionTaxAppliesNotes);
   //bodyOfIntake.replaceText("", );
 
   docOfIntakeCopy.saveAndClose();
@@ -524,6 +527,22 @@ function autoFillIntakeFromForm(e) {
     bodyOfAR.replaceText("{{otherAttorneyLastName}}", attorneyLastName);
     bodyOfAR.replaceText("{{matterName}}", newMatterName);
     bodyOfAR.replaceText("{{prefixOpposingAttorney}}", prefixOpposingAttorney);
+
+    docOfARCopy.saveAndClose();
+  }
+  // same thing but entering blank if there's not another attorney for some reason
+  else {
+    var attorneyReviewTemplate = DriveApp.getFileById("1WRHeE6M-QXl-KFPiVMz03PFaldWxO7_BceYo2zjPBTs");
+    var copyOfAR = attorneyReviewTemplate.makeCopy("AR Letter for: " + newMatterName, caseFolder);
+    var docOfARCopy = DocumentApp.openById(copyOfAR.getId());
+    var bodyOfAR = docOfARCopy.getBody();
+
+    bodyOfAR.replaceText("{{timestamp}}", "timestamp");
+    bodyOfAR.replaceText("{{otherAttorneyEmail}}", "attorneyEmail");
+    bodyOfAR.replaceText("{{otherAttorneyFirstName}}", "attorneyFirstName");
+    bodyOfAR.replaceText("{{otherAttorneyLastName}}", "attorneyLastName");
+    bodyOfAR.replaceText("{{matterName}}", "matterName");
+    bodyOfAR.replaceText("{{prefixOpposingAttorney}}", "prefixOpposingAttorney");
 
     docOfARCopy.saveAndClose();
   }
